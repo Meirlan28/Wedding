@@ -1,0 +1,67 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Environment
+.env
+.venv/
+venv/
+ENV/
+env/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Flask instance folder
+instance/
+
+# Flask SQLite database (если используете SQLite)
+*.sqlite3
+*.db
+
+# Pytest / coverage
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+nosetests.xml
+coverage.xml
+
+# MyPy
+.mypy_cache/
+
+# VSCode
+.vscode/
+
+# IDEs
+.idea/
+*.iml
+
+# MacOS
+.DS_Store
+
+# Docker
+*.log
+docker-compose.override.yml
+
+# PyInstaller
+dist/
+build/
+*.spec
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Node (если используется фронтенд)
+node_modules/
+npm-debug.log*
+
+# Logs
+*.log
+
+# Local dev artifacts
+*.bak
+*.swp

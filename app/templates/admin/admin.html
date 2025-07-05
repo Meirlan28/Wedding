@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Админ-панель | Статистика гостей</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #6c5ce7;
+      --secondary-color: #a29bfe;
+      --accent-color: #fd79a8;
+      --dark-color: #2d3436;
+      --light-color: #f5f6fa;
+      --success-color: #00b894;
+    }
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f8f9fa;
+      color: var(--dark-color);
+    }
+    
+    .admin-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .admin-header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      border-radius: 15px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 30px rgba(108, 92, 231, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .admin-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+      transform: rotate(30deg);
+    }
+    
+    .welcome-text {
+      font-weight: 700;
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .logout-btn {
+      background-color: var(--accent-color);
+      border: none;
+      border-radius: 50px;
+      padding: 0.5rem 1.5rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+    }
+    
+    .logout-btn:hover {
+      background-color: #e84393;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(253, 121, 168, 0.4);
+    }
+    
+    .stats-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .stats-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    .stats-title {
+      color: var(--primary-color);
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+    }
+    
+    .stats-title i {
+      margin-right: 10px;
+      font-size: 1.5rem;
+    }
+    
+    .guests-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    
+    .guests-table thead {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+    }
+    
+    .guests-table th {
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+    }
+    
+    .guests-table td {
+      padding: 1rem;
+      border-bottom: 1px solid #f1f1f1;
+      transition: background 0.2s ease;
+    }
+    
+    .guests-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .guests-table tbody tr:hover td {
+      background-color: #f8f9fa;
+    }
+    
+    .attendance-yes {
+      color: var(--success-color);
+      font-weight: 600;
+    }
+    
+    .attendance-no {
+      color: #d63031;
+      font-weight: 600;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: #636e72;
+    }
+    
+    .empty-state i {
+      font-size: 3rem;
+      color: #b2bec3;
+      margin-bottom: 1rem;
+    }
+    
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .summary-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    
+    .summary-card h3 {
+      color: var(--primary-color);
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .summary-card .count {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--dark-color);
+    }
+    
+    .summary-card .label {
+      color: #636e72;
+      font-size: 0.9rem;
+    }
+    
+    @media (max-width: 768px) {
+      .admin-header {
+        padding: 1.5rem;
+      }
+      
+      .welcome-text {
+        font-size: 1.8rem;
+      }
+      
+      .summary-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <div class="admin-header">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="welcome-text">Добро пожаловать, {{ username }}!</h1>
+          <p class="mb-0">Панель управления статистикой гостей</p>
+        </div>
+        <a href="{{ url_for('main.logout') }}" class="btn logout-btn">
+          <i class="bi bi-box-arrow-right me-2"></i> Выйти
+        </a>
+      </div>
+    </div>
+    
+    <div class="summary-cards">
+      <div class="summary-card">
+        <h3>Всего гостей</h3>
+        <div class="count">{{ guests|length }}</div>
+        <div class="label">зарегистрировано</div>
+      </div>
+      <div class="summary-card">
+<h3>Присутствуют</h3>
+<div class="count">
+  {{ guests | selectattr('attendance', 'in', ['yes', 'yes_with_guest']) | list | length }}
+</div>
+
+        <div class="label">подтвердили</div>
+      </div>
+      <div class="summary-card">
+        <h3>С гостями</h3>
+        <div class="count">{{ guests|sum(attribute='guestCount') }}</div>
+        <div class="label">доп. гостей</div>
+      </div>
+      <div class="summary-card">
+        <h3>Всего людей</h3>
+        <div class="count">{{ guests|selectattr('attendance', 'equalto', 'Да')|list|length + guests|sum(attribute='guestCount') }}</div>
+        <div class="label">ожидается</div>
+      </div>
+    </div>
+    
+    <div class="stats-card">
+      <h3 class="stats-title"><i class="bi bi-people-fill"></i> Список гостей</h3>
+      
+      <div class="table-responsive">
+        <table class="guests-table">
+          <thead>
+            <tr>
+              <th>ФИО</th>
+              <th>Присутствие</th>
+              <th>Количество гостей</th>
+              <th>Всего людей</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for guest in guests %}
+              <tr>
+                <td>{{ guest.fullname }}</td>
+                <td class="attendance-{{ 'yes' if guest.attendance == 'Да' else 'no' }}">
+                  {{ guest.attendance }}
+                </td>
+                <td>{{ guest.guestCount }}</td>
+                <td>
+                  {% if guest.attendance == 'Да' %}
+                    {{ guest.guestCount + 1 }}
+                  {% else %}
+                    0
+                  {% endif %}
+                </td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="4">
+                  <div class="empty-state">
+                    <i class="bi bi-emoji-frown"></i>
+                    <p>Гостей пока нет</p>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Анимация при загрузке страницы
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.stats-card, .summary-card');
+      cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        
+        setTimeout(() => {
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, 150 * index);
+      });
+    });
+  </script>
+</body>
+</html>

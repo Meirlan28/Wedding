@@ -1,0 +1,39 @@
+
+services:
+  postgres:
+    image: postgres
+    container_name: wedding-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: Wedding
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - wedding-net
+
+  
+  wedding:
+    image: wedding
+    restart: no
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: wedding-db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: Wedding
+    networks:
+      - wedding-net
+
+
+volumes:
+  pgdata:
+
+networks:
+  wedding-net:
+    driver: bridge
